@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Static Export with Docker & Nginx
 
-## Getting Started
+This project demonstrates a streamlined Next.js application configured for static export and strictly deployed using Docker with an Nginx server. 
 
-First, run the development server:
+## Features
+
+- **Next.js Static Export**: Fully static build generated in the `/out` directory. No Node.js server required at runtime.
+- **Nginx Serving**: Robust, lightweight production-grade web serving over port 8080.
+- **pnpm Driven**: Dependencies and builds are strictly locked to `pnpm` for faster, reproducible performance.
+- **Modern UI**: Tailored with a custom glassmorphism entry page using Tailwind CSS v4.
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed on your machine.
+- Optional: `pnpm` installed locally if you want to run the project outside of Docker.
+
+## How to Run
+
+1. **Build and Start the Container**
+
+The application environment is orchestrated entirely through Docker Compose. Run the following command to build the image and start the Server instance:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **View the Application**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Once the container reports as `Up`, open your browser and navigate to:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+👉 **[http://localhost:8080](http://localhost:8080)**
 
-## Learn More
+## Configuration Details
 
-To learn more about Next.js, take a look at the following resources:
+- **next.config.ts**: Configured with `output: "export"` and `images: { unoptimized: true }` to satisfy static export requirements.
+- **Dockerfile**: Uses a multi-stage approach taking a `node:slim` foundation to build your app using `pnpm` and an `nginxinc/nginx-unprivileged` rootless runner to host the output static files.
+- **compose.yml**: Exposes the containerized Nginx instance on `8080` port mapping.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stopping the Server
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To stop the running application, execute:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker compose down
+```
